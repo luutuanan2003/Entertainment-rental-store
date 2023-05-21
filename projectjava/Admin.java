@@ -1,9 +1,8 @@
 package projectjava;
 
+import java.io.*;
+import java.util.Objects;
 import java.util.Scanner;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
 
 public class Admin {
     private String username;
@@ -27,14 +26,17 @@ public class Admin {
                 '}';
     }
     public static void main(String[] args) {
-        addItem();
+        //addItem();
+        //updateItem();
+        //deleteItem();
+        displayallItems();
+
     }
 
     public static void addItem(){
-        System.out.println("Enter the name of the file: ");
-
+        String fileName = "items.txt"; // Replace with the actual file path
         try (Scanner sc = new Scanner(System.in);
-             PrintWriter pw = new PrintWriter(new FileWriter(sc.nextLine())))
+             PrintWriter pw = new PrintWriter(new FileWriter(fileName, true)))
         {
             do {
                 System.out.println("What type of item that you want to enter to the database: ");
@@ -49,14 +51,15 @@ public class Admin {
                 String loanType = sc.nextLine();
                 System.out.println("Enter the quantity of the item : ");
                 int quantity = sc.nextInt();
+                sc.nextLine();
                 System.out.println("Enter the rental fee of the item : ");
                 double rentalFee = sc.nextDouble();
+                sc.nextLine();
                 String genre = "";
                 if (type.equalsIgnoreCase("Record") || (type.equalsIgnoreCase("DVD"))) {
                     System.out.println("Enter the genre of the item: ");
                     genre = sc.nextLine();
                 }
-                sc.nextLine(); // clear trailing newline from nextInt()
                 // write input data to file
                 pw.printf("%s\t%s\t%s\t%s\t%d\t%.2f\t%s\n", ID, title, rentalType, loanType, quantity, rentalFee, genre);
                 System.out.println("Do you wish to continue entering new item to the database  Y/N ?");
@@ -71,14 +74,218 @@ public class Admin {
         }
     }
 
+    public static void updateItem() {
+        String fileName = "items.txt"; // Replace with the actual file path
+        try (Scanner sc = new Scanner(System.in);
+             BufferedReader br = new BufferedReader(new FileReader(fileName));
+             PrintWriter pw = new PrintWriter(new FileWriter(fileName + ".tmp")))
+        {
+            System.out.println("Enter the ID of the item you want to update: ");
+            String searchID = sc.nextLine();
+            String line;
+            boolean found = false;
 
-    public void updateItem(Item items){
+            while ((line = br.readLine()) != null) {
+                String[] itemData = line.split("\s+");
+                String ID = itemData[0];
+                if (ID.equalsIgnoreCase(searchID)) {
+                    found = true;
+                    System.out.println("What part would you like to change?");
+                    System.out.println("1. Title");
+                    System.out.println("2. Rental Type");
+                    System.out.println("3. Loan Type");
+                    System.out.println("4. Quantity");
+                    System.out.println("5. Rental Fee");
+                    System.out.println("6. Genre (for Record/DVD)");
 
+                    int choice = sc.nextInt();
+                    sc.nextLine(); // Consume newline character
+
+                    switch (choice) {
+                        case 1:
+                            System.out.println("Enter the new title: ");
+                            itemData[1] = sc.nextLine();
+                            break;
+                        case 2:
+                            String temp2;
+                            do {
+                                System.out.println("Enter the new rental type (Record/DVD/Game): ");
+                                temp2 = sc.nextLine();
+                                if (!temp2.equalsIgnoreCase("Record") && !temp2.equalsIgnoreCase("DVD") && !temp2.equalsIgnoreCase("Game")) {
+                                    System.out.println("Please enter 'Record', 'DVD', or 'Game'.");
+                                }
+                            } while (!temp2.equalsIgnoreCase("Record") && !temp2.equalsIgnoreCase("DVD") && !temp2.equalsIgnoreCase("Game"));
+                            itemData[2] = temp2;
+                            break;
+
+                        case 3:
+                            String temp3;
+                            do {
+                                System.out.println("Enter the new loan type (1-week/2-day): ");
+                                temp3 = sc.nextLine();
+                                if (!temp3.equalsIgnoreCase("1-week") && !temp3.equalsIgnoreCase("2-day")) {
+                                    System.out.println("Please enter '1-week', '2-day'.");
+                                }
+                            } while (!temp3.equalsIgnoreCase("1-week") && !temp3.equalsIgnoreCase("2-day"));
+                            itemData[3] = temp3;
+                            break;
+
+                        case 4:
+                            boolean validQuantity4 = false;
+                            while (!validQuantity4) {
+                                System.out.println("Enter the new quantity for the item: ");
+                                if (sc.hasNextInt()) {
+                                    itemData[4] = Integer.toString(sc.nextInt());
+                                    sc.nextLine(); // Consume newline character
+                                    validQuantity4 = true;
+                                } else {
+                                    System.out.println("Invalid input.");
+                                }
+                            }
+                            break;
+
+                        case 5:
+                            boolean validQuantity5 = false;
+                            while (!validQuantity5) {
+                                System.out.println("Enter the new quantity for the item: ");
+                                if (sc.hasNextDouble()) {
+                                    itemData[5] = Integer.toString(sc.nextInt());
+                                    sc.nextLine(); // Consume newline character
+                                    validQuantity5 = true;
+                                } else {
+                                    System.out.println("Invalid input.");
+                                }
+                            }
+                            break;
+
+                        case 6:
+                            if (itemData[6].equalsIgnoreCase("Record") || itemData[6].equalsIgnoreCase("DVD")) {
+                                System.out.println("Enter the new genre: ");
+                                String newGenre = sc.nextLine();
+                                if (itemData[6].equalsIgnoreCase("Game")) {
+                                    System.out.println("Genre cannot be updated for Game items.");
+                                } else {
+                                    itemData[6] = newGenre;
+                                }
+                            } else {
+                                System.out.println("Genre can only be updated for Record/DVD items.");
+                            }
+                            break;
+                        default:
+                            System.out.println("Invalid choice!");
+                            break;
+                    }
+                    line = String.join("\t", itemData); // Update the line
+                }
+                pw.println(line);
+            }
+
+            if (!found) {
+                System.out.println("No item found with the specified ID.");
+            }
+
+            br.close();
+            pw.close();
+
+            // Rename the temporary file to the original file
+            File originalFile = new File(fileName);
+            File tmpFile = new File(fileName + ".tmp");
+            if (originalFile.delete()) {
+                if (!tmpFile.renameTo(originalFile)) {
+                    System.out.println("Failed to rename the temporary file.");
+                }
+            } else {
+                System.out.println("Failed to delete the original file.");
+            }
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    public void deleteItem(Item items){
 
+
+    public static void deleteItem() {
+        String fileName = "items.txt"; // Replace with the actual file path
+        boolean continueDeleting = true;
+
+        try (Scanner sc = new Scanner(System.in)) {
+            do {
+                try (BufferedReader br = new BufferedReader(new FileReader(fileName));
+                     PrintWriter pw = new PrintWriter(new FileWriter(fileName + ".tmp")))
+                {
+                    System.out.println("Enter the ID of the item you want to delete: ");
+                    String searchID = sc.nextLine();
+                    String line;
+                    boolean found = false;
+
+                    while ((line = br.readLine()) != null) {
+                        String[] itemData = line.split("\\s+");
+                        String ID = itemData[0];
+                        if (ID.equalsIgnoreCase(searchID)) {
+                            found = true;
+                            continue; // Skip writing the line to the temporary file (effectively deleting the item)
+                        }
+                        pw.println(line);
+                    }
+
+                    if (!found) {
+                        System.out.println("No item found with the specified ID.");
+                    } else {
+                        System.out.println("Item deleted successfully.");
+                    }
+
+                    br.close();
+                    pw.close();
+
+                    // Rename the temporary file to the original file
+                    File originalFile = new File(fileName);
+                    File tmpFile = new File(fileName + ".tmp");
+                    if (originalFile.delete()) {
+                        if (!tmpFile.renameTo(originalFile)) {
+                            System.out.println("Failed to rename the temporary file.");
+                        }
+                    } else {
+                        System.out.println("Failed to delete the original file.");
+                    }
+
+                    System.out.println("Do you want to continue deleting items? (Y/N)");
+                    String userInput = sc.nextLine();
+                    if (!userInput.equalsIgnoreCase("Y")) {
+                        continueDeleting = false;
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } while (continueDeleting);
+        }
     }
+
+
+
+    public static void displayallItems() {
+        String fileName = "items.txt"; // Replace with the actual file path
+        try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] itemData = line.split("\t");
+                System.out.println("Item ID: " + itemData[0]);
+                System.out.println("Title: " + itemData[1]);
+                System.out.println("Rental Type: " + itemData[2]);
+                System.out.println("Loan Type: " + itemData[3]);
+                System.out.println("Quantity: " + itemData[4]);
+                System.out.println("Rental Fee: " + itemData[5]);
+                if (itemData.length > 6) {
+                    System.out.println("Genre: " + itemData[6]);
+                }
+                System.out.println("---------------");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
 
     public void addCus(Customer cus){
 
@@ -92,9 +299,8 @@ public class Admin {
 
     }
 
-    public void displayallItems(){
 
-    }
+
 
     public void displayItemsnostock(){
 
