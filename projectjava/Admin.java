@@ -331,8 +331,32 @@ public class Admin {
 
 
 
-    public void displayItemsnostock(){
+public static void displayItemsnostock() {
+        String fileName = "items.txt"; // Replace with the actual file path
+        try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] itemData = line.split("\t");
+                int quantity = Integer.parseInt(itemData[4]);
 
+                if (quantity == 0) {
+                    System.out.println("Item ID: " + itemData[0]);
+                    System.out.println("Title: " + itemData[1]);
+                    System.out.println("Rental Type: " + itemData[2]);
+                    System.out.println("Loan Type: " + itemData[3]);
+                    System.out.println("Quantity: " + itemData[4]);
+                    System.out.println("Rental Fee: " + itemData[5]);
+
+                    if (itemData.length > 6) {
+                        System.out.println("Genre: " + itemData[6]);
+                    }
+
+                    System.out.println("---------------");
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void displayallCus(){
