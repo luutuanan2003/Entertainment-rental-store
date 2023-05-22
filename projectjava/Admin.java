@@ -315,8 +315,114 @@ public class Admin {
         }
     }
 
-    public void updateCus(Customer cus) {
+    public static void updateCus() {
+        String fileName = "customers.txt"; // Replace with the actual file path
+        try (Scanner sc = new Scanner(System.in);
+             BufferedReader br = new BufferedReader(new FileReader(fileName));
+             PrintWriter pw = new PrintWriter(new FileWriter(fileName + ".tmp")))
+        {
+            System.out.println("Enter the ID of the customer you want to update: ");
+            String searchID = sc.nextLine();
+            String line;
+            boolean found = false;
 
+            while ((line = br.readLine()) != null) {
+                String[] customerData = line.split(",");
+                String ID = customerData[0];
+                if (ID.equalsIgnoreCase(searchID)) {
+                    found = true;
+                    boolean continueUpdating = true;
+                    while (continueUpdating) {
+                        System.out.println("What part would you like to change?");
+                        System.out.println("1. Name");
+                        System.out.println("2. Address");
+                        System.out.println("3. Phone Number");
+                        System.out.println("4. Number of Rentals");
+                        System.out.println("5. Customer Type");
+                        System.out.println("6. Username");
+                        System.out.println("7. Password");
+
+                        int choice = sc.nextInt();
+                        sc.nextLine(); // Consume newline character
+
+                        switch (choice) {
+                            case 1:
+                                System.out.println("Enter the new name: ");
+                                customerData[1] = sc.nextLine();
+                                break;
+                            case 2:
+                                System.out.println("Enter the new address: ");
+                                customerData[2] = sc.nextLine();
+                                break;
+                            case 3:
+                                System.out.println("Enter the new phone number: ");
+                                customerData[3] = sc.nextLine();
+                                break;
+                            case 4:
+                                boolean validNumRentals = false;
+                                while (!validNumRentals) {
+                                    System.out.println("Enter the new number of rentals: ");
+                                    if (sc.hasNextInt()) {
+                                        customerData[4] = Integer.toString(sc.nextInt());
+                                        sc.nextLine(); // Consume newline character
+                                        validNumRentals = true;
+                                    } else {
+                                        System.out.println("Invalid input.");
+                                    }
+                                }
+                                break;
+                            case 5:
+                                System.out.println("Enter the new customer type: ");
+                                customerData[5] = sc.nextLine();
+                                break;
+                            case 6:
+                                System.out.println("Enter the new username: ");
+                                customerData[6] = sc.nextLine();
+                                break;
+                            case 7:
+                                System.out.println("Enter the new password: ");
+                                customerData[7] = sc.nextLine();
+                                break;
+                            default:
+                                System.out.println("Invalid choice!");
+                                continue;
+                        }
+
+                        System.out.println("Do you want to continue updating this customer? (Y/N)");
+                        String continueChoice = sc.nextLine();
+                        if (continueChoice.equalsIgnoreCase("Y")) {
+                            continueUpdating = true;
+                        } else if (continueChoice.equalsIgnoreCase("N")) {
+                            continueUpdating = false;
+                            System.out.println("Exiting the program.");
+                            return; // Exit the method
+                        } else {
+                            System.out.println("Invalid choice. Exiting the program.");
+                            return; // Exit the method
+                        }
+                    }
+                    pw.println(String.join(",", customerData));
+                } else {
+                    pw.println(line);
+                }
+            }
+
+            if (!found) {
+                System.out.println("Customer not found.");
+            }
+
+            boolean success = new File(fileName).delete();
+            if (success) {
+                boolean renamed = new File(fileName + ".tmp").renameTo(new File(fileName));
+                if (!renamed) {
+                    System.out.println("Failed to rename the updated file.");
+                }
+            } else {
+                System.out.println("Failed to delete the original file.");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void promoteCus() {
