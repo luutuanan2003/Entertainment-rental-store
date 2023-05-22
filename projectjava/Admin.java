@@ -287,8 +287,37 @@ public class Admin {
 
 
 
-    public void addCus(Customer cus){
+    public static void addCus() {
+        String fileName = "customers.txt"; // Replace with the actual file path
+        try (Scanner sc = new Scanner(System.in);
+             PrintWriter pw = new PrintWriter(new FileWriter(fileName, true))) {
+            do {
+                System.out.println("Enter the ID of the customer: ");
+                String ID = sc.nextLine();
+                System.out.println("Enter the name of the customer: ");
+                String name = sc.nextLine();
+                System.out.println("Enter the address of the customer: ");
+                String address = sc.nextLine();
+                System.out.println("Enter the phone number of the customer: ");
+                String phone = sc.nextLine();
+                System.out.println("Enter the number of rentals for the customer: ");
+                int numRentals = sc.nextInt();
+                sc.nextLine();
+                System.out.println("Enter the customer type: ");
+                String customerType = sc.nextLine();
+                System.out.println("Enter the username: ");
+                String username = sc.nextLine();
+                System.out.println("Enter the password: ");
+                String password = sc.nextLine();
 
+                // Write customer data to file
+                pw.printf("%s\t%s\t%s\t%s\t%d\t%s\t%s\t%s\n", ID, name, address, phone, numRentals, customerType, username, password);
+
+                System.out.println("Do you wish to continue entering a new customer to the database (Y/N)?");
+            } while (Character.toUpperCase(sc.nextLine().charAt(0)) == 'Y');
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void updateCus(Customer cus){
