@@ -86,7 +86,7 @@ public class Admin {
             boolean found = false;
 
             while ((line = br.readLine()) != null) {
-                String[] itemData = line.split("\s+");
+                String[] itemData = line.split(",");
                 String ID = itemData[0];
                 if (ID.equalsIgnoreCase(searchID)) {
                     found = true;
@@ -175,7 +175,7 @@ public class Admin {
                             System.out.println("Invalid choice!");
                             break;
                     }
-                    line = String.join("\t", itemData); // Update the line
+                    line = String.join(",", itemData); // Update the line
                 }
                 pw.println(line);
             }
