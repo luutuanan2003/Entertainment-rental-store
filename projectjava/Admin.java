@@ -12,7 +12,7 @@ public class Admin {
         this.password = password;
     }
 
-    public Admin(){
+    public Admin() {
         this.username = "default";
         this.password = "default";
     }
@@ -24,20 +24,22 @@ public class Admin {
                 ", password='" + password + '\'' +
                 '}';
     }
+
     public static void main(String[] args) {
         //addItem();
         //updateItem();
         //deleteItem();
         //displayallItems();
-        addCus();
+        //addCus();
+        //searchItem();
+        searchCus();
 
     }
 
-    public static void addItem(){
+    public static void addItem() {
         String fileName = "items.txt"; // Replace with the actual file path
         try (Scanner sc = new Scanner(System.in);
-             PrintWriter pw = new PrintWriter(new FileWriter(fileName, true)))
-        {
+             PrintWriter pw = new PrintWriter(new FileWriter(fileName, true))) {
             do {
                 System.out.println("What type of item that you want to enter to the database: ");
                 String type = sc.nextLine();
@@ -68,8 +70,7 @@ public class Admin {
         }
         // Note that FileWriter throws a different exception to the previous
         // FileInputStream/FileInputStream examples
-        catch (IOException e)
-        {
+        catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -78,8 +79,7 @@ public class Admin {
         String fileName = "items.txt"; // Replace with the actual file path
         try (Scanner sc = new Scanner(System.in);
              BufferedReader br = new BufferedReader(new FileReader(fileName));
-             PrintWriter pw = new PrintWriter(new FileWriter(fileName + ".tmp")))
-        {
+             PrintWriter pw = new PrintWriter(new FileWriter(fileName + ".tmp"))) {
             System.out.println("Enter the ID of the item you want to update: ");
             String searchID = sc.nextLine();
             String line;
@@ -197,12 +197,10 @@ public class Admin {
             } else {
                 System.out.println("Failed to delete the original file.");
             }
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
-
 
 
     public static void deleteItem() {
@@ -212,8 +210,7 @@ public class Admin {
         try (Scanner sc = new Scanner(System.in)) {
             do {
                 try (BufferedReader br = new BufferedReader(new FileReader(fileName));
-                     PrintWriter pw = new PrintWriter(new FileWriter(fileName + ".tmp")))
-                {
+                     PrintWriter pw = new PrintWriter(new FileWriter(fileName + ".tmp"))) {
                     System.out.println("Enter the ID of the item you want to delete: ");
                     String searchID = sc.nextLine();
                     String line;
@@ -262,7 +259,6 @@ public class Admin {
     }
 
 
-
     public static void displayallItems() {
         String fileName = "items.txt"; // Replace with the actual file path
         try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
@@ -284,7 +280,6 @@ public class Admin {
             e.printStackTrace();
         }
     }
-
 
 
     public static void addCus() {
@@ -320,15 +315,13 @@ public class Admin {
         }
     }
 
-    public void updateCus(Customer cus){
+    public void updateCus(Customer cus) {
 
     }
 
-    public void promoteCus(Customer cus){
+    public void promoteCus(Customer cus) {
 
     }
-
-
 
 
     public static void displayItemsnostock() {
@@ -359,7 +352,7 @@ public class Admin {
         }
     }
 
-public static void displayallCus() {
+    public static void displayallCus() {
         String fileName = "customers.txt"; // Replace with the actual file path
         try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
             String line;
@@ -389,7 +382,7 @@ public static void displayallCus() {
         }
     }
 
-public static void displayCusbylevel() {
+    public static void displayCusbylevel() {
         String fileName = "customers.txt"; // Replace with the actual file path
         try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
             String line;
@@ -430,11 +423,119 @@ public static void displayCusbylevel() {
         }
     }
 
-    public void searchItem(Item items){
+    public static void searchItem() {
+        String fileName = "items.txt"; // Replace with the actual file path
+        Scanner sc = new Scanner(System.in);
+        BufferedReader br = null;
+        boolean continueSearch = true;
 
+        do {
+            try {
+                br = new BufferedReader(new FileReader(fileName));
+
+                System.out.println("Enter the ID of the item you want to search: ");
+                String searchID = sc.nextLine();
+                String line;
+                boolean found = false;
+
+                while ((line = br.readLine()) != null) {
+                    String[] itemData = line.split(",");
+                    String ID = itemData[0];
+                    if (ID.equalsIgnoreCase(searchID)) {
+                        found = true;
+                        System.out.println("Item ID: " + itemData[0]);
+                        System.out.println("Title: " + itemData[1]);
+                        System.out.println("Rental Type: " + itemData[2]);
+                        System.out.println("Loan Type: " + itemData[3]);
+                        System.out.println("Quantity: " + itemData[4]);
+                        System.out.println("Rental Fee: " + itemData[5]);
+                        if (itemData.length > 6) {
+                            System.out.println("Genre: " + itemData[6]);
+                        }
+                        System.out.println("---------------");
+                        break; // Exit the loop after finding the item
+                    }
+                }
+
+                if (!found) {
+                    System.out.println("No item found with the specified ID.");
+                }
+
+                System.out.println("Do you want to search for another item? (Y/N): ");
+                String continueChoice = sc.nextLine();
+                if (!continueChoice.equalsIgnoreCase("Y")) {
+                    continueSearch = false;
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    if (br != null) {
+                        br.close();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        } while (continueSearch);
+
+        sc.close();
     }
 
-    public void searchCus(Customer cus){
+    public static void searchCus() {
+        String fileName = "customers.txt"; // Replace with the actual file path
+        Scanner sc = new Scanner(System.in);
+        BufferedReader br = null;
+        boolean continueSearch = true;
 
+        do {
+            try {
+                br = new BufferedReader(new FileReader(fileName));
+
+                System.out.println("Enter the ID of the customer you want to search: ");
+                String searchID = sc.nextLine();
+                String line;
+                boolean found = false;
+
+                while ((line = br.readLine()) != null) {
+                    String[] customerData = line.split(",");
+                    String ID = customerData[0];
+                    if (ID.equalsIgnoreCase(searchID)) {
+                        found = true;
+                        System.out.println("Customer ID: " + customerData[0]);
+                        System.out.println("Name: " + customerData[1]);
+                        System.out.println("Address: " + customerData[2]);
+                        System.out.println("Phone: " + customerData[3]);
+                        System.out.println("Membership Level: " + customerData[4]);
+                        System.out.println("Username: " + customerData[5]);
+                        System.out.println("Password: " + customerData[6]);
+                        System.out.println("---------------");
+                        break; // Exit the loop after finding the customer
+                    }
+                }
+
+                if (!found) {
+                    System.out.println("No customer found with the specified ID.");
+                }
+
+                System.out.println("Do you want to search for another customer? (Y/N): ");
+                String continueChoice = sc.nextLine();
+                if (!continueChoice.equalsIgnoreCase("Y")) {
+                    continueSearch = false;
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    if (br != null) {
+                        br.close();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        } while (continueSearch);
+
+        sc.close();
     }
 }
