@@ -359,12 +359,75 @@ public class Admin {
         }
     }
 
-    public void displayallCus(){
+public static void displayallCus() {
+        String fileName = "customers.txt"; // Replace with the actual file path
+        try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] customerData = line.split(",");
+                System.out.println("Customer ID: " + customerData[0]);
+                System.out.println("Name: " + customerData[1]);
+                System.out.println("Address: " + customerData[2]);
+                System.out.println("Phone: " + customerData[3]);
+                System.out.println("Number of Rentals: " + customerData[4]);
+                System.out.println("Customer Type: " + customerData[5]);
+                System.out.println("Username: " + customerData[6]);
+                System.out.println("Password: " + customerData[7]);
 
+                // Check if there are items associated with the customer
+                if (customerData.length > 8) {
+                    System.out.println("Items: ");
+                    for (int i = 8; i < customerData.length; i++) {
+                        System.out.println("- " + customerData[i]);
+                    }
+                }
+
+                System.out.println("---------------");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    public void displayCusbygroup(){
+public static void displayCusbylevel() {
+        String fileName = "customers.txt"; // Replace with the actual file path
+        try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
+            String line;
+            String currentCustomerType = ""; // Track the current customer type
 
+            while ((line = br.readLine()) != null) {
+                String[] customerData = line.split(",");
+                String customerType = customerData[5];
+
+                // Check if customer type has changed
+                if (!customerType.equals(currentCustomerType)) {
+                    currentCustomerType = customerType;
+                    System.out.println("---------------");
+                    System.out.println("Customer Type: " + customerType);
+                    System.out.println("---------------");
+                }
+
+                System.out.println("Customer ID: " + customerData[0]);
+                System.out.println("Name: " + customerData[1]);
+                System.out.println("Address: " + customerData[2]);
+                System.out.println("Phone: " + customerData[3]);
+                System.out.println("Number of Rentals: " + customerData[4]);
+                System.out.println("Username: " + customerData[6]);
+                System.out.println("Password: " + customerData[7]);
+
+                // Check if there are items associated with the customer
+                if (customerData.length > 8) {
+                    System.out.println("Items: ");
+                    for (int i = 8; i < customerData.length; i++) {
+                        System.out.println("- " + customerData[i]);
+                    }
+                }
+
+                System.out.println("---------------");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void searchItem(Item items){
