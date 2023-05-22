@@ -1,4 +1,3 @@
-package projectjava;
 
 import java.io.*;
 import java.util.Objects;
@@ -29,7 +28,8 @@ public class Admin {
         //addItem();
         //updateItem();
         //deleteItem();
-        displayallItems();
+        //displayallItems();
+        addCus();
 
     }
 
@@ -61,7 +61,7 @@ public class Admin {
                     genre = sc.nextLine();
                 }
                 // write input data to file
-                pw.printf("%s\t%s\t%s\t%s\t%d\t%.2f\t%s\n", ID, title, rentalType, loanType, quantity, rentalFee, genre);
+                pw.printf("%s,%s,%s,%s,%d,%.2f,%s\n", ID, title, rentalType, loanType, quantity, rentalFee, genre);
                 System.out.println("Do you wish to continue entering new item to the database  Y/N ?");
             }
             while (Character.toUpperCase(sc.nextLine().charAt(0)) == 'Y');
@@ -220,7 +220,7 @@ public class Admin {
                     boolean found = false;
 
                     while ((line = br.readLine()) != null) {
-                        String[] itemData = line.split("\\s+");
+                        String[] itemData = line.split(",");
                         String ID = itemData[0];
                         if (ID.equalsIgnoreCase(searchID)) {
                             found = true;
@@ -268,7 +268,7 @@ public class Admin {
         try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
             String line;
             while ((line = br.readLine()) != null) {
-                String[] itemData = line.split("\t");
+                String[] itemData = line.split(",");
                 System.out.println("Item ID: " + itemData[0]);
                 System.out.println("Title: " + itemData[1]);
                 System.out.println("Rental Type: " + itemData[2]);
@@ -311,7 +311,7 @@ public class Admin {
                 String password = sc.nextLine();
 
                 // Write customer data to file
-                pw.printf("%s\t%s\t%s\t%s\t%d\t%s\t%s\t%s\n", ID, name, address, phone, numRentals, customerType, username, password);
+                pw.printf("%s,%s,%s,%s,%d,%s,%s,%s\n", ID, name, address, phone, numRentals, customerType, username, password);
 
                 System.out.println("Do you wish to continue entering a new customer to the database (Y/N)?");
             } while (Character.toUpperCase(sc.nextLine().charAt(0)) == 'Y');
@@ -331,12 +331,12 @@ public class Admin {
 
 
 
-public static void displayItemsnostock() {
+    public static void displayItemsnostock() {
         String fileName = "items.txt"; // Replace with the actual file path
         try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
             String line;
             while ((line = br.readLine()) != null) {
-                String[] itemData = line.split("\t");
+                String[] itemData = line.split(",");
                 int quantity = Integer.parseInt(itemData[4]);
 
                 if (quantity == 0) {
@@ -359,75 +359,12 @@ public static void displayItemsnostock() {
         }
     }
 
-public static void displayallCus() {
-        String fileName = "customers.txt"; // Replace with the actual file path
-        try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                String[] customerData = line.split(",");
-                System.out.println("Customer ID: " + customerData[0]);
-                System.out.println("Name: " + customerData[1]);
-                System.out.println("Address: " + customerData[2]);
-                System.out.println("Phone: " + customerData[3]);
-                System.out.println("Number of Rentals: " + customerData[4]);
-                System.out.println("Customer Type: " + customerData[5]);
-                System.out.println("Username: " + customerData[6]);
-                System.out.println("Password: " + customerData[7]);
+    public void displayallCus(){
 
-                // Check if there are items associated with the customer
-                if (customerData.length > 8) {
-                    System.out.println("Items: ");
-                    for (int i = 8; i < customerData.length; i++) {
-                        System.out.println("- " + customerData[i]);
-                    }
-                }
-
-                System.out.println("---------------");
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
-public static void displayCusbylevel() {
-        String fileName = "customers.txt"; // Replace with the actual file path
-        try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
-            String line;
-            String currentCustomerType = ""; // Track the current customer type
+    public void displayCusbygroup(){
 
-            while ((line = br.readLine()) != null) {
-                String[] customerData = line.split(",");
-                String customerType = customerData[5];
-
-                // Check if customer type has changed
-                if (!customerType.equals(currentCustomerType)) {
-                    currentCustomerType = customerType;
-                    System.out.println("---------------");
-                    System.out.println("Customer Type: " + customerType);
-                    System.out.println("---------------");
-                }
-
-                System.out.println("Customer ID: " + customerData[0]);
-                System.out.println("Name: " + customerData[1]);
-                System.out.println("Address: " + customerData[2]);
-                System.out.println("Phone: " + customerData[3]);
-                System.out.println("Number of Rentals: " + customerData[4]);
-                System.out.println("Username: " + customerData[6]);
-                System.out.println("Password: " + customerData[7]);
-
-                // Check if there are items associated with the customer
-                if (customerData.length > 8) {
-                    System.out.println("Items: ");
-                    for (int i = 8; i < customerData.length; i++) {
-                        System.out.println("- " + customerData[i]);
-                    }
-                }
-
-                System.out.println("---------------");
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     public void searchItem(Item items){
