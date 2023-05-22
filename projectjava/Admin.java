@@ -319,10 +319,87 @@ public class Admin {
 
     }
 
-    public void promoteCus(Customer cus) {
+    public static void promoteCus() {
+        try {
+            // Read the contents of the file
+            File inputFile = new File("customers.txt");
+            Scanner scanner = new Scanner(inputFile);
+            StringBuilder sb = new StringBuilder();
 
+            // Store customer data in a map for easy access
+            Map<String, String[]> customerDataMap = new HashMap<>();
+
+            // Iterate through each line in the file and populate the map
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                String[] customerData = line.split(",");
+                customerDataMap.put(customerData[0], customerData);
+            }
+
+            scanner.close();
+
+            // Prompt the admin to enter the customer ID to promote
+            Scanner adminInput = new Scanner(System.in);
+            System.out.print("Enter the customer ID to promote: ");
+            String customerId = adminInput.nextLine().trim();
+
+            // Check if the entered customer ID exists in the map
+            if (!customerDataMap.containsKey(customerId)) {
+                System.out.println("Invalid customer ID. Promotion aborted.");
+                return;
+            }
+
+            String[] customerData = customerDataMap.get(customerId);
+
+            // Display the customer details
+            System.out.println("Customer ID: " + customerData[0]);
+            System.out.println("Name: " + customerData[1]);
+            System.out.println("Address: " + customerData[2]);
+            System.out.println("Phone: " + customerData[3]);
+            System.out.println("Type: " + customerData[5]);
+
+            // Prompt the admin to update the customer type
+            System.out.print("Enter the new customer type (Guest, Regular, or VIP): ");
+            String newType = adminInput.nextLine().trim();
+
+            // Validate the new type
+            if (!newType.equalsIgnoreCase("Guest") &&
+                    !newType.equalsIgnoreCase("Regular") &&
+                    !newType.equalsIgnoreCase("VIP")) {
+                System.out.println("Invalid customer type. Promotion aborted.");
+                return;
+            }
+
+            // Check if the new type is higher than the current type
+            if (getCustomerTypeLevel(newType) <= getCustomerTypeLevel(customerData[5])) {
+                System.out.println("The new customer type must be higher than the current type. Promotion aborted.");
+                return;
+            }
+
+            // Update the customer type
+            customerData[5] = newType;
+
+            // Reconstruct the line with modified data
+            String modifiedLine = String.join(",", customerData);
+
+            // Update the customer data in the map
+            customerDataMap.put(customerId, customerData);
+
+            // Reconstruct the file content with modified data
+            for (String[] data : customerDataMap.values()) {
+                sb.append(String.join(",", data)).append("\n");
+            }
+
+            // Write the modified contents back to the file
+            FileWriter writer = new FileWriter("customers.txt");
+            writer.write(sb.toString());
+            writer.close();
+
+            System.out.println("Customer promotion completed.");
+        } catch (IOException e) {
+            System.out.println("An error occurred while promoting the customer: " + e.getMessage());
+        }
     }
-
 
     public static void displayItemsnostock() {
         String fileName = "items.txt"; // Replace with the actual file path
