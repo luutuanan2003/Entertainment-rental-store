@@ -687,6 +687,102 @@ public class Admin {
         sc.close();
     }
 
+    public static void addCusRentItem() {
+        try {
+            Scanner scanner = new Scanner(System.in);
+            System.out.println("Enter customer ID: ");
+            String customerId = scanner.nextLine();
+            System.out.println("Enter item ID: ");
+            String itemId = scanner.nextLine();
+
+            // Read the contents of the customers.txt file
+            File customerFile = new File("customers.txt");
+            Scanner customerScanner = new Scanner(customerFile);
+            StringBuilder customerSb = new StringBuilder();
+
+            // Store customer data in a map for easy access
+            Map<String, String[]> customerDataMap = new HashMap<>();
+
+            // Iterate through each line in the customer file and populate the map
+            while (customerScanner.hasNextLine()) {
+                String line = customerScanner.nextLine();
+                String[] customerData = line.split(",");
+                customerDataMap.put(customerData[0], customerData);
+            }
+
+            customerScanner.close();
+
+            // Check if the customer ID exists in the map
+            if (!customerDataMap.containsKey(customerId)) {
+                System.out.println("Invalid customer ID. Failed to add rented item.");
+                return;
+            }
+
+            String[] customerData = customerDataMap.get(customerId);
+
+            // Append the rented item ID to the customer's record
+            customerData[6] += itemId + ",";
+
+            // Reconstruct the line with modified data
+            String modifiedLine = String.join(",", customerData);
+
+            // Update the customer data in the map
+            customerDataMap.put(customerId, customerData);
+
+            // Reconstruct the customers.txt file content with modified data
+            customerSb.setLength(0);
+            for (String[] data : customerDataMap.values()) {
+                customerSb.append(String.join(",", data)).append("\n");
+            }
+
+            // Write the modified customer contents back to the file
+            FileWriter customerWriter = new FileWriter("customers.txt");
+            customerWriter.write(customerSb.toString());
+            customerWriter.close();
+
+            // Update the item quantity in the items.txt file
+            File itemsFile = new File("items.txt");
+            Scanner itemsScanner = new Scanner(itemsFile);
+            StringBuilder itemsSb = new StringBuilder();
+
+            // Iterate through each line in the items file and update the quantity
+            while (itemsScanner.hasNextLine()) {
+                String line = itemsScanner.nextLine();
+                String[] itemData = line.split(",");
+                String currentItemId = itemData[0];
+
+                if (currentItemId.equalsIgnoreCase(itemId)) {
+                    int quantity = Integer.parseInt(itemData[4]);
+
+                    // Check if item quantity is greater than 0
+                    if (quantity > 0) {
+                        itemData[4] = Integer.toString(quantity - 1);
+                    } else {
+                        System.out.println("Item is out of stock. Failed to update quantity.");
+                    }
+                }
+
+                // Reconstruct the line with modified data
+                String modifiedItemLine = String.join(",", itemData);
+
+                // Append the modified item line to the items.txt content
+                itemsSb.append(modifiedItemLine).append("\n");
+            }
+
+            itemsScanner.close();
+
+            // Write the modified item contents back to the file
+            FileWriter itemsWriter = new FileWriter("items.txt");
+            itemsWriter.write(itemsSb.toString());
+            itemsWriter.close();
+
+            System.out.println("Rented item added to the customer record successfully. Item quantity updated.");
+
+        } catch (IOException e) {
+            System.out.println("An error occurred while adding the rented item to the customer record: " + e.getMessage());
+        }
+    }
+    
     public static void searchCus() {
         String fileName = "customers.txt"; // Replace with the actual file path
         Scanner sc = new Scanner(System.in);
