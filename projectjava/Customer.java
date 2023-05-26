@@ -8,15 +8,19 @@ import java.util.Scanner;
 public abstract class Customer {
     private String ID;
     private String name;
+    private String address;
     private String phone;
-    private ArrayList<Item> items = new ArrayList<Item>();
+    private int total_rentals;
+    private String customerType;
     private String username;
     private String password;
 
-    private String[][] orders;
-
     public String getID() {
         return ID;
+    }
+
+    public String getAddress() {
+        return address;
     }
 
     public String getName() {
@@ -27,10 +31,6 @@ public abstract class Customer {
         return phone;
     }
 
-    public ArrayList<Item> getItems() {
-        return items;
-    }
-
     public String getUsername() {
         return username;
     }
@@ -39,11 +39,21 @@ public abstract class Customer {
         return password;
     }
 
-    public Customer(String ID, String name, String phone, ArrayList<Item> items, String username, String password) {
+    public String getCustomerType() {
+        return customerType;
+    }
+
+    public int getTotal_rentals() {
+        return total_rentals;
+    }
+
+    public Customer(String ID, String name, String address ,String phone, int total_rentals, String customerType, String username, String password) {
         this.ID = ID;
         this.name = name;
+        this.address = address;
         this.phone = phone;
-        this.items = items;
+        this.total_rentals = total_rentals;
+        this.customerType = customerType;
         this.username = username;
         this.password = password;
     }
@@ -52,7 +62,6 @@ public abstract class Customer {
         this.ID = "default";
         this.name = "default";
         this.phone = "default";
-        this.items = null;
         this.username = "default";
         this.password = "default";
     }
@@ -280,19 +289,84 @@ public abstract class Customer {
         return returnTotal;
     }
 
-        @Override
+    public void resetTotalReturn(String CID) {
+        try {
+            File inputFile = new File("managementCus.txt");
+            File tempFile = new File("tempManagementCus.txt");
+
+            BufferedReader reader = new BufferedReader(new FileReader(inputFile));
+            BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile));
+
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] customerInfo = line.split(",");
+                if (customerInfo[0].equals(CID)) {
+                    customerInfo[4] = "0"; // Reset the number of return times to 0
+                    line = String.join(",", customerInfo);
+                }
+                writer.write(line);
+                writer.newLine();
+            }
+
+            reader.close();
+            writer.close();
+
+            inputFile.delete();
+            tempFile.renameTo(inputFile);
+
+            System.out.println("Number of return times reset to 0 for customer ID: " + CID);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
     public String toString() {
         return "Customer{" +
                 "ID='" + ID + '\'' +
                 ", name='" + name + '\'' +
-                ", phone=" + phone +
-                ", items=" + items +
+                ", address='" + address + '\'' +
+                ", phone='" + phone + '\'' +
+                ", total_rentals=" + total_rentals +
+                ", customerType='" + customerType + '\'' +
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 '}';
     }
 
-        public static int getTotalRentalItems( String Cid) {
+    public void addTotalReturn(String CID) {
+        try {
+            File inputFile = new File("managementCus.txt");
+            File tempFile = new File("tempManagementCus.txt");
+
+            BufferedReader reader = new BufferedReader(new FileReader(inputFile));
+            BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile));
+
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] customerInfo = line.split(",");
+                if (customerInfo[0].equals(CID)) {
+                    int totalReturn = Integer.parseInt(customerInfo[4]); // Get the current total return
+                    totalReturn++; // Increment the total return by 1
+                    customerInfo[4] = String.valueOf(totalReturn); // Update the total return
+                    line = String.join(",", customerInfo);
+                }
+                writer.write(line);
+                writer.newLine();
+            }
+
+            reader.close();
+            writer.close();
+
+            inputFile.delete();
+            tempFile.renameTo(inputFile);
+
+            System.out.println("Total return for customer " + CID + " has been incremented.");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    public static int getTotalRentalItems(String Cid) {
         int rentalItemCount = 0;
         String line;
         try (BufferedReader br = new BufferedReader(new FileReader("managementCus.txt"))) {
@@ -308,12 +382,17 @@ public abstract class Customer {
         }
         return rentalItemCount;
     }
-
     public static void main(String[] args)
     {
         Regularaccount C = new Regularaccount("C008", "Hai", "090123456", null, "haha", "password" );
-        int c = C.getnumReturn("C003");
+        //int c = C.getnumReturn("C003");
+        //C.resetTotalReturn("C001");
         //C.returned();
+        //C.promoteCustomer("C005");
+        //C.promoteManagement("C005");
+        VIPaccount V = new VIPaccount("C009", "haha", "0901231312", null, "haha", "pass");
+        //V.addRewardPoint("C001");
+
     }
 
 
