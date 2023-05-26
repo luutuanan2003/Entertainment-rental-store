@@ -1,9 +1,10 @@
 package projectjava;
 
-public abstract class Item {
+public  class Item {
     private String ID;
     private String title;
     private String rentalType;
+    private String loanType;
     private int quantity;
     private double rentalFee;
     private boolean rentalStatus;
@@ -14,6 +15,9 @@ public abstract class Item {
 
     public String getTitle() {
         return title;
+    }
+    public String getLoanType() {
+        return loanType;
     }
 
     public String getRentalType() {
@@ -32,10 +36,11 @@ public abstract class Item {
         return rentalStatus;
     }
 
-    public Item(String ID, String title, String rentalType, int quantity, int rentalFee, boolean rentalStatus) {
+    public Item(String ID, String title, String rentalType,String loanType, int quantity, int rentalFee, boolean rentalStatus) {
         this.ID = ID;
         this.title = title;
         this.rentalType = rentalType;
+        this.loanType =loanType;
         this.quantity = quantity;
         this.rentalFee = rentalFee;
         this.rentalStatus = rentalStatus;
@@ -45,6 +50,7 @@ public abstract class Item {
         this.ID = "default";
         this.title = "default";
         this.rentalType = "default";
+        this.loanType="default";
         this.quantity = 0;
         this.rentalFee = 0.00;
         this.rentalStatus = true;
