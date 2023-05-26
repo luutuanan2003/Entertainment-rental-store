@@ -779,109 +779,158 @@ public class Admin {
             Scanner scanner = new Scanner(System.in);
             System.out.println("Enter customer ID: ");
             String customerId = scanner.nextLine();
-            System.out.println("Enter item ID: ");
-            String itemId = scanner.nextLine();
 
             // Read the contents of the customers.txt file
             File customerFile = new File("customers.txt");
             Scanner customerScanner = new Scanner(customerFile);
             StringBuilder customerSb = new StringBuilder();
+            boolean customerExists = false;
 
-            // Store customer data in a map for easy access
-            Map<String, List<String>> customerDataMap = new HashMap<>();
-
-            // Iterate through each line in the customer file and populate the map
+            // Iterate through each line in the customer file and update the rented item list and number of rentals
             while (customerScanner.hasNextLine()) {
                 String line = customerScanner.nextLine();
                 String[] customerData = line.split(",");
                 String customerIdKey = customerData[0];
-                List<String> itemList = new ArrayList<>();
 
-                // Start from index 1 to skip the customer ID
-                for (int i = 1; i < customerData.length; i++) {
-                    itemList.add(customerData[i]);
+                if (customerIdKey.equals(customerId)) {
+                    customerExists = true;
+                    List<String> itemList = new ArrayList<>();
+
+                    // Start from index 1 to skip the customer ID
+                    for (int i = 1; i < customerData.length; i++) {
+                        itemList.add(customerData[i]);
+                    }
+
+                    System.out.println("Enter item ID: ");
+                    String itemId = scanner.nextLine();
+
+                    // Read the contents of the items.txt file
+                    File itemsFile = new File("items.txt");
+                    Scanner itemScanner = new Scanner(itemsFile);
+                    StringBuilder itemSb = new StringBuilder();
+                    boolean itemExists = false;
+
+                    // Iterate through each line in the items file and update the quantity
+                    while (itemScanner.hasNextLine()) {
+                        String itemLine = itemScanner.nextLine();
+                        String[] itemData = itemLine.split(",");
+                        String currentItemID = itemData[0];
+
+                        if (currentItemID.equals(itemId)) {
+                            itemExists = true;
+                            int quantityIndex = 4; // Index of quantity in the item data array
+                            int quantity = Integer.parseInt(itemData[quantityIndex]);
+
+                            if (quantity <= 0) {
+                                System.out.println("Item is out of stock. Failed to add rented item.");
+                                itemScanner.close();
+                                customerScanner.close();
+                                return;
+                            }
+
+                            quantity--;
+                            itemData[quantityIndex] = String.valueOf(quantity);
+                        }
+
+                        itemSb.append(String.join(",", itemData)).append("\n");
+                    }
+
+                    itemScanner.close();
+
+                    // Write the modified item contents back to the file
+                    FileWriter itemWriter = new FileWriter("items.txt");
+                    itemWriter.write(itemSb.toString());
+                    itemWriter.close();
+
+                    // Check if the item exists in the items.txt file
+                    if (!itemExists) {
+                        System.out.println("Invalid item ID. Failed to add rented item.");
+                        customerScanner.close();
+                        return;
+                    }
+
+                    // Check if the customer has already rented the item
+                    if (itemList.contains(itemId)) {
+                        System.out.println("Customer has already rented this item. Failed to add rented item.");
+                        customerScanner.close();
+                        return;
+                    }
+
+                    itemList.add(itemId);
+
+                    int numRentalsIndex = 4; // Index of number of rentals in the customer data array
+                    int numRentals = Integer.parseInt(customerData[numRentalsIndex]);
+                    numRentals++;
+                    customerData[numRentalsIndex] = String.valueOf(numRentals);
+
+                    // Reconstruct the customer line with updated rented item list and number of rentals
+                    StringBuilder lineBuilder = new StringBuilder(customerIdKey);
+                    for (String item : itemList) {
+                        lineBuilder.append(",").append(item);
+                    }
+                    customerSb.append(lineBuilder.toString()).append("\n");
+                } else {
+                    // Append the original line as is
+                    customerSb.append(line).append("\n");
                 }
-
-                customerDataMap.put(customerIdKey, itemList);
             }
 
             customerScanner.close();
-
-            // Check if the customer ID exists in the map
-            if (!customerDataMap.containsKey(customerId)) {
-                System.out.println("Invalid customer ID. Failed to add rented item.");
-                return;
-            }
-
-            List<String> itemList = customerDataMap.get(customerId);
-
-            // Check if the customer has already rented the item
-            if (itemList.contains(itemId)) {
-                System.out.println("Customer has already rented this item. Failed to add rented item.");
-                return;
-            }
-
-            itemList.add(itemId);
-
-            // Update the customer data in the map
-            customerDataMap.put(customerId, itemList);
-
-            // Update the quantity of the rented item in the items.txt file
-            File itemsFile = new File("items.txt");
-            BufferedReader reader = new BufferedReader(new FileReader(itemsFile));
-            StringBuilder fileContents = new StringBuilder();
-
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] itemData = line.split(",");
-                String currentItemId = itemData[0];
-
-                if (currentItemId.equals(itemId)) {
-                    int quantityIndex = 4; // Assuming the quantity index is always 4 in the items.txt file
-                    int quantity = Integer.parseInt(itemData[quantityIndex]);
-                    if (quantity <= 0) {
-                        System.out.println("Item is out of stock. Failed to add rented item.");
-                        return;
-                    }
-                    quantity--;
-                    itemData[quantityIndex] = String.valueOf(quantity);
-                }
-
-                fileContents.append(String.join(",", itemData)).append("\n");
-            }
-
-            reader.close();
-
-            // Write the modified item contents back to the file
-            FileWriter writer = new FileWriter("items.txt");
-            writer.write(fileContents.toString());
-            writer.close();
-
-            // Reconstruct the customers.txt file content with modified data
-            customerSb.setLength(0);
-            for (Map.Entry<String, List<String>> entry : customerDataMap.entrySet()) {
-                String customerIdKey = entry.getKey();
-                List<String> items = entry.getValue();
-                StringBuilder lineBuilder = new StringBuilder(customerIdKey);
-
-                for (String item : items) {
-                    lineBuilder.append(",").append(item);
-                }
-
-                customerSb.append(lineBuilder.toString()).append("\n");
-            }
 
             // Write the modified customer contents back to the file
             FileWriter customerWriter = new FileWriter("customers.txt");
             customerWriter.write(customerSb.toString());
             customerWriter.close();
 
-            System.out.println("Rented item added to the customer record successfully.");
+            if (customerExists) {
+                System.out.println("Rented item added to the customer record successfully.");
+                increasetotalRentals(customerId);
+
+            } else {
+                System.out.println("Invalid customer ID. Failed to add rented item.");
+            }
 
         } catch (IOException e) {
             System.out.println("An error occurred while adding the rented item to the customer record: " + e.getMessage());
         }
+
+
     }
+    
+    public static void increasetotalRentals(String CID)
+{
+    try {
+        File inputFile = new File("customers.txt");
+        File tempFile = new File("tempCustomers.txt");
+
+        BufferedReader reader = new BufferedReader(new FileReader(inputFile));
+        BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile));
+
+        String line;
+        while ((line = reader.readLine()) != null) {
+            String[] customerInfo = line.split(",");
+            if (customerInfo[0].equals(CID)) {
+                int numRentals = Integer.parseInt(customerInfo[4]); // Get the current number of rentals
+                numRentals++; // Increment the number of rentals by 1
+                customerInfo[4] = String.valueOf(numRentals); // Update the number of rentals
+                line = String.join(",", customerInfo);
+            }
+            writer.write(line);
+            writer.newLine();
+        }
+
+        reader.close();
+        writer.close();
+
+        inputFile.delete();
+        tempFile.renameTo(inputFile);
+
+        System.out.println("Number of rentals for customer " + CID + " has been increased.");
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+}
+    
     public static void returnCusItem() {
         try {
             Scanner scanner = new Scanner(System.in);
