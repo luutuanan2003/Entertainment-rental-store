@@ -292,6 +292,22 @@ public abstract class Customer {
                 '}';
     }
 
+        public static int getTotalRentalItems( String Cid) {
+        int rentalItemCount = 0;
+        String line;
+        try (BufferedReader br = new BufferedReader(new FileReader("managementCus.txt"))) {
+            while ((line = br.readLine()) != null) {
+                String[] data = line.split(",");
+                if (data.length >= 4 && data[0].equals(Cid)) {
+                    rentalItemCount = Integer.parseInt(data[3]);
+                    break;
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return rentalItemCount;
+    }
 
     public static void main(String[] args)
     {
