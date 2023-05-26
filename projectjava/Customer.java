@@ -57,42 +57,39 @@ public abstract class Customer {
         this.password = "default";
     }
 
-    public void rent() {
+    public String rent() {
         Scanner scanner = new Scanner(System.in);
-
-        // Prompt user for customer ID
         String customerID = "";
+
         boolean validCustomerID = false;
         while (!validCustomerID) {
             System.out.println("Please enter your customer ID: ");
-            customerID = scanner.nextLine().trim(); // Trim any leading/trailing whitespace
+            customerID = scanner.nextLine().trim();
 
-            // Check if the customer ID is valid
             if (!customerID.matches("C\\d{3}")) {
                 System.out.println("Invalid customer ID format. Please provide a valid customer ID.");
             } else {
-                validCustomerID = true;
-            }
-        }
+                boolean customerFound = false;
 
-        boolean customerFound = false;
+                try (BufferedReader br = new BufferedReader(new FileReader("customers.txt"))) {
+                    String line;
+                    while ((line = br.readLine()) != null) {
+                        String[] customerInfo = line.split(",");
+                        if (customerInfo[0].equals(customerID)) {
+                            customerFound = true;
+                            break;
+                        }
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
 
-        try (BufferedReader br = new BufferedReader(new FileReader("customers.txt"))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                String[] customerInfo = line.split(",");
-                if (customerInfo[0].equals(customerID)) {
-                    customerFound = true;
-                    break;
+                if (customerFound) {
+                    validCustomerID = true;
+                } else {
+                    System.out.println("Customer not found with ID: " + customerID);
                 }
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        if (!customerFound) {
-            System.out.println("Customer not found with ID: " + customerID);
-            return;
         }
 
         System.out.println("Customer ID verified");
@@ -161,6 +158,7 @@ public abstract class Customer {
         }
 
         scanner.close(); // Close the scanner
+        return customerID;
     }
 
     public void returned() {
