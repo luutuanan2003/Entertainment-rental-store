@@ -161,7 +161,7 @@ public abstract class Customer {
         return customerID;
     }
 
-    public void returned() {
+    public String returned() {
         Scanner scanner = new Scanner(System.in);
 
         // Prompt user for customer ID
@@ -226,7 +226,7 @@ public abstract class Customer {
 
         if (!customerFound) {
             // Return if the customer is not found
-            return;
+            return null;
         }
 
         // Prompt user for item ID
@@ -260,8 +260,25 @@ public abstract class Customer {
         }
 
         scanner.close(); // Close the scanner
+        return customerID;
     }
 
+    public int getnumReturn(String CID) {
+        int returnTotal = 0;
+        try (BufferedReader br = new BufferedReader(new FileReader("managementCus.txt"))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] customerInfo = line.split(",");
+                if (customerInfo[0].equals(CID)) {
+                    returnTotal = Integer.parseInt(customerInfo[4]);
+                    break;
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return returnTotal;
+    }
 
         @Override
     public String toString() {
@@ -279,8 +296,8 @@ public abstract class Customer {
     public static void main(String[] args)
     {
         Regularaccount C = new Regularaccount("C008", "Hai", "090123456", null, "haha", "password" );
-        //C.rent();
-        C.returned();
+        int c = C.getnumReturn("C003");
+        //C.returned();
     }
 
 
