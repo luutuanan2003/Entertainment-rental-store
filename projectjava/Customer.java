@@ -168,10 +168,9 @@ public abstract class Customer {
                 }
                 String loanType = getLoanType(itemID);
 
-                if (accountType == "Guest" && loanType == "2-day")
-                {
-                    System.out.println("You are not allow to rent this kind of item");
-                    break;
+                if (accountType.equals("Guest") && loanType.equals("2-day")) {
+                    System.out.println("You are not allowed to rent this kind of item");
+                    return customerID; // Exit the method
                 }
                 else {
                     // Retrieve information about the item from the items.txt file
