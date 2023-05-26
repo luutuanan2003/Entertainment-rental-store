@@ -66,6 +66,51 @@ public abstract class Customer {
         this.password = "default";
     }
 
+    public String getAccountType(String CID) {
+        try {
+            File file = new File("managementCus.txt");
+            BufferedReader reader = new BufferedReader(new FileReader(file));
+
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] customerInfo = line.split(",");
+                if (customerInfo[0].equals(CID)) {
+                    reader.close();
+                    return customerInfo[2]; // Return the account type
+                }
+            }
+
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return ""; // Return an empty string if the customer ID is not found
+    }
+
+    public String getLoanType(String itemID) {
+        try {
+            File file = new File("items.txt");
+            BufferedReader reader = new BufferedReader(new FileReader(file));
+
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] itemInfo = line.split(",");
+                if (itemInfo[0].equals(itemID)) {
+                    reader.close();
+                    String loanType = itemInfo[3]; // Get the loan type
+                    return loanType;
+                }
+            }
+
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return ""; // Return an empty string if the item ID is not found
+    }
+
     public String rent() {
         Scanner scanner = new Scanner(System.in);
         String customerID = "";
@@ -100,7 +145,7 @@ public abstract class Customer {
                 }
             }
         }
-
+        String accountType = getAccountType(customerID);
         System.out.println("Customer ID verified");
         System.out.println("------------");
 
@@ -121,52 +166,61 @@ public abstract class Customer {
                 } else {
                     validItemID = true;
                 }
+                String loanType = getLoanType(itemID);
 
-                // Retrieve information about the item from the items.txt file
-                try (BufferedReader br = new BufferedReader(new FileReader("items.txt"))) {
-                    String line;
-                    while ((line = br.readLine()) != null) {
-                        String[] itemInfo = line.split(",");
-                        if (itemInfo[0].equals(itemID)) {
-                            System.out.println("------------");
-                            System.out.println("Item ID: " + itemInfo[0]);
-                            System.out.println("Item Name: " + itemInfo[1]);
-                            System.out.println("Item Price: " + itemInfo[5]);
+                if (accountType == "Guest" && loanType == "2-day")
+                {
+                    System.out.println("You are not allow to rent this kind of item");
+                    break;
+                }
+                else {
+                    // Retrieve information about the item from the items.txt file
+                    try (BufferedReader br = new BufferedReader(new FileReader("items.txt"))) {
+                        String line;
+                        while ((line = br.readLine()) != null) {
+                            String[] itemInfo = line.split(",");
+                            if (itemInfo[0].equals(itemID)) {
+                                System.out.println("------------");
+                                System.out.println("Item ID: " + itemInfo[0]);
+                                System.out.println("Item Name: " + itemInfo[1]);
+                                System.out.println("Item Price: " + itemInfo[5]);
 
-                            // Store the customer ID, item ID, and quantity in the orders array
-                            String[][] orders = new String[1][2];
-                            orders[0][0] = customerID;
-                            orders[0][1] = itemID;
-                            itemFound = true;
-                            break;
+                                // Store the customer ID, item ID, and quantity in the orders array
+                                String[][] orders = new String[1][2];
+                                orders[0][0] = customerID;
+                                orders[0][1] = itemID;
+                                itemFound = true;
+                                break;
+                            }
                         }
-                    }
 
-                    if (!itemFound) {
-                        System.out.println("Item not found with ID: " + itemID);
-                        validItemID = false;
+                        if (!itemFound) {
+                            System.out.println("Item not found with ID: " + itemID);
+                            validItemID = false;
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
-                } catch (IOException e) {
-                    e.printStackTrace();
                 }
             }
+
+            // Print the order details
+            System.out.println("------------");
+            System.out.println("Order Details: ");
+            System.out.println("Customer ID: " + customerID);
+            System.out.println("Item ID: " + itemID);
+
+            // Save the order details to the orders.txt file
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter("rentorders.txt", true))) {
+                bw.write(customerID + "," + itemID);
+                bw.newLine();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            scanner.close(); // Close the scanner
+
         }
-
-        // Print the order details
-        System.out.println("------------");
-        System.out.println("Order Details: ");
-        System.out.println("Customer ID: " + customerID);
-        System.out.println("Item ID: " + itemID);
-
-        // Save the order details to the orders.txt file
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter("rentorders.txt", true))) {
-            bw.write(customerID + "," + itemID);
-            bw.newLine();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        scanner.close(); // Close the scanner
         return customerID;
     }
 
@@ -384,14 +438,15 @@ public abstract class Customer {
     }
     public static void main(String[] args)
     {
-        Regularaccount C = new Regularaccount("C008", "Hai", "090123456", null, "haha", "password" );
+        Regularaccount C = new Regularaccount("C008", "Hai", "090123456", null, 1, "Regular", "haha", "password" );
         //int c = C.getnumReturn("C003");
         //C.resetTotalReturn("C001");
         //C.returned();
         //C.promoteCustomer("C005");
         //C.promoteManagement("C005");
-        VIPaccount V = new VIPaccount("C009", "haha", "0901231312", null, "haha", "pass");
+        VIPaccount V = new VIPaccount("C009", "haha", "0901231312", null, 1, "Regular", "haha", "password" );
         //V.addRewardPoint("C001");
+        C.rent();
 
     }
 
