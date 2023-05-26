@@ -1,10 +1,12 @@
+package projectjava;
+
 import java.util.ArrayList;
 
 public class VIPaccount extends Customer{
     private int rewardpoints;
 
-    public VIPaccount(String ID, String name, String phone, ArrayList<Item> items, String username, String password, int rewardpoints) {
-        super(ID, name, phone, items, username, password);
+    public VIPaccount(String ID, String name, String address ,String phone, int total_rentals, String customerType, String username, String password, int rewardpoints) {
+        super(ID,  name,  address , phone,  total_rentals, customerType,  username, password);
         this.rewardpoints = rewardpoints;
     }
 
@@ -18,8 +20,8 @@ public class VIPaccount extends Customer{
 
         return customerID;
     }
-    @Override
-    public void returned(){
 
+    public void Vreturned(){
+        String cID = super.returned();
     }
 }
