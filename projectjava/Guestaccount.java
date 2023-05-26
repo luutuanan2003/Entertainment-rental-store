@@ -1,9 +1,7 @@
-package projectjava;
-
 import java.util.ArrayList;
 
 public class Guestaccount extends Customer{
-    public Guestaccount(String ID, String name, int phone, ArrayList<Item> items, String username, String password) {
+    public Guestaccount(String ID, String name, String phone, ArrayList<Item> items, String username, String password) {
         super(ID, name, phone, items, username, password);
     }
     @Override
@@ -11,7 +9,9 @@ public class Guestaccount extends Customer{
 
     }
     @Override
-    public void rent(Item items){
-
+    public String rent()
+    {
+        String customerID = super.rent();
+        return customerID;
     }
 }
