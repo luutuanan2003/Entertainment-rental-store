@@ -1,0 +1,62 @@
+public void resetTotalReturn() {
+        String customerID = customerIDField.getText().trim();
+        boolean validCustomerID = validateCustomerID(customerID);
+
+        if (validCustomerID) {
+            boolean success = resetReturnTimes(customerID);
+
+            if (success) {
+                displayAlert("Number of return times reset to 0 for customer ID: " + customerID);
+            } else {
+                displayAlert("Failed to reset return times. Please try again.");
+            }
+        } else {
+            displayAlert("Invalid customer ID format. Please provide a valid customer ID.");
+        }
+    }
+
+private boolean resetReturnTimes(String customerID) {
+        try {
+            File inputFile = new File("managementCus.txt");
+            File tempFile = new File("tempManagementCus.txt");
+
+            BufferedReader reader = new BufferedReader(new FileReader(inputFile));
+            BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile));
+
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] customerInfo = line.split(",");
+                if (customerInfo[0].equals(customerID)) {
+                    customerInfo[4] = "0"; // Reset the number of return times to 0
+                    line = String.join(",", customerInfo);
+                }
+                writer.write(line);
+                writer.newLine();
+            }
+
+            reader.close();
+            writer.close();
+
+            if (!inputFile.delete()) {
+                System.out.println("Failed to delete the original file.");
+                return false;
+            }
+            if (!tempFile.renameTo(inputFile)) {
+                System.out.println("Failed to rename the temporary file.");
+                return false;
+            }
+
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+ private void displayAlert(String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Information");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }

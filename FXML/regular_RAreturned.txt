@@ -1,0 +1,51 @@
+public void RAreturned() {
+    String customerID = super.returned();
+    int totalReturns = getnumReturn(customerID);
+    
+    if (totalReturns > 5) {
+        Platform.runLater(() -> {
+            // Show a success alert for VIP promotion
+            showSuccessAlert("Promotion Successful", "Congratulations!! You have been promoted to VIP");
+
+            // Promote the customer to VIP in customers.txt and managementCus.txt
+            promoteCustomer(customerID);
+            promoteManagement(customerID);
+
+            // Reset the total returns
+            resetTotalReturn(customerID);
+
+            // Show a notification to the user
+            showNotification("VIP Promotion", "Customer " + customerID + " has been promoted to VIP");
+            
+            // Update the UI or perform any necessary actions
+            // ...
+        });
+    } else {
+        Platform.runLater(() -> {
+            // Add the return and show the total returns
+            addTotalReturn(customerID);
+
+            // Show the total returns in a dialog
+            showAlert(AlertType.INFORMATION, "Total Returns", "Total returns of " + customerID + " is " + totalReturns);
+            
+            // Update the UI or perform any necessary actions
+            // ...
+        });
+    }
+}
+
+private void showSuccessAlert(String title, String message) {
+    showAlert(AlertType.INFORMATION, title, message);
+}
+
+private void showNotification(String title, String message) {
+    showAlert(AlertType.INFORMATION, title, message);
+}
+
+private void showAlert(AlertType alertType, String title, String message) {
+    Alert alert = new Alert(alertType);
+    alert.setTitle(title);
+    alert.setHeaderText(null);
+    alert.setContentText(message);
+    alert.showAndWait();
+}

@@ -1,0 +1,44 @@
+public void promoteCustomer(String customerID) {
+    try {
+        File inputFile = new File("customers.txt");
+        File tempFile = new File("tempCustomers.txt");
+
+        BufferedReader reader = new BufferedReader(new FileReader(inputFile));
+        BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile));
+
+        String line;
+        while ((line = reader.readLine()) != null) {
+            String[] customerInfo = line.split(",");
+            if (customerInfo[0].equals(customerID)) {
+                customerInfo[5] = "VIP"; // Change the account type to VIP
+                line = String.join(",", customerInfo);
+            }
+            writer.write(line);
+            writer.newLine();
+        }
+
+        reader.close();
+        writer.close();
+
+        inputFile.delete();
+        tempFile.renameTo(inputFile);
+
+        Platform.runLater(() -> {
+            // Show a success alert for promotion
+            showSuccessAlert("Promotion Successful", "Customer " + customerID + " has been promoted to VIP");
+
+            // Update the UI or perform any necessary actions
+            // ...
+        });
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+}
+
+private void showSuccessAlert(String title, String message) {
+    Alert alert = new Alert(AlertType.INFORMATION);
+    alert.setTitle(title);
+    alert.setHeaderText(null);
+    alert.setContentText(message);
+    alert.showAndWait();
+}
