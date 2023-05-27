@@ -848,7 +848,7 @@ public class Admin {
                     itemScanner.close();
 
                     // Write the modified item contents back to the file
-                    FileWriter itemWriter = new FileWriter("items.txt");
+                    FileWriter itemWriter = new FileWriter("rentorders.txt");
                     itemWriter.write(itemSb.toString());
                     itemWriter.close();
 
@@ -906,7 +906,6 @@ public class Admin {
 
 
     }
-
     public static void increasetotalRentals(String CID)
     {
         try {
