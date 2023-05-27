@@ -5,30 +5,39 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
-public abstract class Customer {
-    private String ID;
+public class Customer {
+    private String customerID;
     private String name;
     private String address;
     private String phone;
-    private int total_rentals;
-    private String customerType;
+    private int numOfRentals;
+    private String accountType;
     private String username;
     private String password;
+    private List<String> rentals;
 
-    public String getID() {
-        return ID;
-    }
-
-    public String getAddress() {
-        return address;
+    public String getCustomerID() {
+        return customerID;
     }
 
     public String getName() {
         return name;
     }
 
+    public String getAddress() {
+        return address;
+    }
+
     public String getPhone() {
         return phone;
+    }
+
+    public int getNumOfRentals() {
+        return numOfRentals;
+    }
+
+    public String getAccountType() {
+        return accountType;
     }
 
     public String getUsername() {
@@ -39,31 +48,54 @@ public abstract class Customer {
         return password;
     }
 
-    public String getCustomerType() {
-        return customerType;
+    public List<String> getRentals() {
+        return rentals;
     }
 
-    public int getTotal_rentals() {
-        return total_rentals;
+
+    public static void getNumberofRental(String customerID) {
+        String filePath = "managementCus.txt";
+        String line;
+        int totalRentals = 0;
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+            while ((line = reader.readLine()) != null) {
+                String[] customerData = line.split(",");
+                if (customerData.length >= 4 && customerData[0].trim().equals(customerID)) {
+                    totalRentals = Integer.parseInt(customerData[3].trim());
+                    break;
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println("Total number of rentals for customer ID " + customerID + ": " + totalRentals);
     }
 
-    public Customer(String ID, String name, String address ,String phone, int total_rentals, String customerType, String username, String password) {
-        this.ID = ID;
+    public Customer(String customerID, String name, String address, String phone, int numOfRentals,
+                    String accountType, String username, String password, List<String> rentals) {
+        this.customerID = customerID;
         this.name = name;
         this.address = address;
         this.phone = phone;
-        this.total_rentals = total_rentals;
-        this.customerType = customerType;
+        this.numOfRentals = numOfRentals;
+        this.accountType = accountType;
         this.username = username;
         this.password = password;
+        this.rentals = rentals;
     }
 
     public Customer() {
-        this.ID = "default";
+        this.customerID = "default";
         this.name = "default";
+        this.address = "default";
         this.phone = "default";
+        this.numOfRentals = 0;
+        this.accountType = "default";
         this.username = "default";
         this.password = "default";
+        this.rentals = null;
     }
 
     public String getAccountType(String CID) {
@@ -376,14 +408,15 @@ public abstract class Customer {
     @Override
     public String toString() {
         return "Customer{" +
-                "ID='" + ID + '\'' +
+                "customerID='" + customerID + '\'' +
                 ", name='" + name + '\'' +
                 ", address='" + address + '\'' +
                 ", phone='" + phone + '\'' +
-                ", total_rentals=" + total_rentals +
-                ", customerType='" + customerType + '\'' +
+                ", numOfRentals=" + numOfRentals +
+                ", accountType='" + accountType + '\'' +
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
+                ", rentals=" + rentals +
                 '}';
     }
 
@@ -437,17 +470,17 @@ public abstract class Customer {
     }
     public static void main(String[] args)
     {
-        Regularaccount C = new Regularaccount("C008", "Hai", "090123456", null, 1, "Regular", "haha", "password" );
+        Regularaccount C = new Regularaccount("C008", "Hai", "090123456", null, 1, "Regular", "haha", "password", null );
         //int c = C.getnumReturn("C003");
         //C.resetTotalReturn("C001");
         //C.returned();
         //C.promoteCustomer("C005");
         //C.promoteManagement("C005");
-        VIPaccount V = new VIPaccount("C009", "haha", "0901231312", null, 1, "Regular", "haha", "password" );
+        VIPaccount V = new VIPaccount("C009", "haha", "0901231312", null, 1, "Regular", "haha", "password", null );
         //V.addRewardPoint("C001");
-        C.rent();
+        //C.rent();
+        //Guestaccount G = new Guestaccount("C010", "Hai", "090123456", null, 1, "Regular", "haha", "password", null);
+        //G.Grent();
 
     }
-
-
 }
