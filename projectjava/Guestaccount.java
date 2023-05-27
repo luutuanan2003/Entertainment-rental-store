@@ -1,10 +1,11 @@
 import java.io.*;
+import java.util.List;
 import java.util.Scanner;
 
 
 public class Guestaccount extends Customer{
-    public Guestaccount(String ID, String name, String address ,String phone, int total_rentals, String customerType, String username, String password) {
-        super(ID,  name,  address , phone,  total_rentals, customerType,  username, password);
+    public Guestaccount(String customerID, String name, String address, String phone, int numOfRentals, String accountType, String username, String password, List<String> rentals) {
+        super(customerID, name, address, phone, numOfRentals, accountType, username, password, rentals);
     }
 
 
