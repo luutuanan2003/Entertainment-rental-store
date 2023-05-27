@@ -1,5 +1,3 @@
-package projectjava;
-
 import java.io.*;
 import java.util.*;
 
@@ -265,26 +263,31 @@ public class Admin {
     }
 
 
-    public static void displayallItems() {
-        String fileName = "items.txt"; // Replace with the actual file path
+    public static String displayallItems() {
+        String fileName = "items.txt";
+        StringBuilder itemsInfo = new StringBuilder();
+
         try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
             String line;
+
             while ((line = br.readLine()) != null) {
                 String[] itemData = line.split(",");
-                System.out.println("Item ID: " + itemData[0]);
-                System.out.println("Title: " + itemData[1]);
-                System.out.println("Rental Type: " + itemData[2]);
-                System.out.println("Loan Type: " + itemData[3]);
-                System.out.println("Quantity: " + itemData[4]);
-                System.out.println("Rental Fee: " + itemData[5]);
+                itemsInfo.append("Item ID: ").append(itemData[0]).append("\n");
+                itemsInfo.append("Title: ").append(itemData[1]).append("\n");
+                itemsInfo.append("Rental Type: ").append(itemData[2]).append("\n");
+                itemsInfo.append("Loan Type: ").append(itemData[3]).append("\n");
+                itemsInfo.append("Quantity: ").append(itemData[4]).append("\n");
+                itemsInfo.append("Rental Fee: ").append(itemData[5]).append("\n");
                 if (itemData.length > 6) {
-                    System.out.println("Genre: " + itemData[6]);
+                    itemsInfo.append("Genre: ").append(itemData[6]).append("\n");
                 }
-                System.out.println("---------------");
+                itemsInfo.append("---------------\n");
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        return itemsInfo.toString();
     }
 
     public static void addCus() {
@@ -560,34 +563,41 @@ public class Admin {
         }
     }
 
-    public static void displayallCus() {
-        String fileName = "customers.txt"; // Replace with the actual file path
+    public static List<Customer> displayAllCustomers() {
+        String fileName = "customers.txt";
+        List<Customer> customers = new ArrayList<>();
+
         try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
             String line;
+
             while ((line = br.readLine()) != null) {
                 String[] customerData = line.split(",");
-                System.out.println("Customer ID: " + customerData[0]);
-                System.out.println("Name: " + customerData[1]);
-                System.out.println("Address: " + customerData[2]);
-                System.out.println("Phone: " + customerData[3]);
-                System.out.println("Number of Rentals: " + customerData[4]);
-                System.out.println("Customer Type: " + customerData[5]);
-                System.out.println("Username: " + customerData[6]);
-                System.out.println("Password: " + customerData[7]);
+                String customerID = customerData[0];
+                String name = customerData[1];
+                String address = customerData[2];
+                String phone = customerData[3];
+                int numOfRentals = Integer.parseInt(customerData[4]);
+                String accountType = customerData[5];
+                String username = customerData[6];
+                String password = customerData[7];
+                List<String> rentals = new ArrayList<>();
 
                 // Check if there are items associated with the customer
                 if (customerData.length > 8) {
-                    System.out.println("Items: ");
                     for (int i = 8; i < customerData.length; i++) {
-                        System.out.println("- " + customerData[i]);
+                        rentals.add(customerData[i]);
                     }
                 }
 
-                System.out.println("---------------");
+                Customer customer = new Customer(customerID, name, address, phone, numOfRentals, accountType,
+                        username, password, rentals);
+                customers.add(customer);
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        return customers;
     }
 
     public static void displayCusbylevel() {
@@ -896,41 +906,41 @@ public class Admin {
 
 
     }
-    
+
     public static void increasetotalRentals(String CID)
-{
-    try {
-        File inputFile = new File("customers.txt");
-        File tempFile = new File("tempCustomers.txt");
+    {
+        try {
+            File inputFile = new File("customers.txt");
+            File tempFile = new File("tempCustomers.txt");
 
-        BufferedReader reader = new BufferedReader(new FileReader(inputFile));
-        BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile));
+            BufferedReader reader = new BufferedReader(new FileReader(inputFile));
+            BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile));
 
-        String line;
-        while ((line = reader.readLine()) != null) {
-            String[] customerInfo = line.split(",");
-            if (customerInfo[0].equals(CID)) {
-                int numRentals = Integer.parseInt(customerInfo[4]); // Get the current number of rentals
-                numRentals++; // Increment the number of rentals by 1
-                customerInfo[4] = String.valueOf(numRentals); // Update the number of rentals
-                line = String.join(",", customerInfo);
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] customerInfo = line.split(",");
+                if (customerInfo[0].equals(CID)) {
+                    int numRentals = Integer.parseInt(customerInfo[4]); // Get the current number of rentals
+                    numRentals++; // Increment the number of rentals by 1
+                    customerInfo[4] = String.valueOf(numRentals); // Update the number of rentals
+                    line = String.join(",", customerInfo);
+                }
+                writer.write(line);
+                writer.newLine();
             }
-            writer.write(line);
-            writer.newLine();
+
+            reader.close();
+            writer.close();
+
+            inputFile.delete();
+            tempFile.renameTo(inputFile);
+
+            System.out.println("Number of rentals for customer " + CID + " has been increased.");
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-
-        reader.close();
-        writer.close();
-
-        inputFile.delete();
-        tempFile.renameTo(inputFile);
-
-        System.out.println("Number of rentals for customer " + CID + " has been increased.");
-    } catch (IOException e) {
-        e.printStackTrace();
     }
-}
-    
+
     public static void returnCusItem() {
         try {
             Scanner scanner = new Scanner(System.in);
