@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.demo2.CustomerController">
+   <children>
+      <Pane prefHeight="411.0" prefWidth="600.0">
+         <children>
+            <AnchorPane layoutY="99.0">
+               <children>
+                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#ddff00" height="341.0" stroke="TRANSPARENT" strokeType="INSIDE" width="107.0" />
+                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#ddff00" height="315.0" layoutX="95.0" layoutY="26.0" stroke="TRANSPARENT" strokeType="INSIDE" width="80.0" />
+                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#ddff00" height="275.0" layoutX="158.0" layoutY="66.0" stroke="TRANSPARENT" strokeType="INSIDE" width="180.0" />
+                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#ddff00" height="315.0" layoutX="332.0" layoutY="26.0" stroke="TRANSPARENT" strokeType="INSIDE" width="116.0" />
+                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#ddff00" height="330.0" layoutX="434.0" layoutY="11.0" stroke="TRANSPARENT" strokeType="INSIDE" width="46.0" />
+                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#ddff00" height="256.0" layoutX="408.0" layoutY="85.0" stroke="TRANSPARENT" strokeType="INSIDE" width="192.0" />
+                  <Rectangle arcHeight="5.0" arcWidth="5.0" height="202.0" layoutY="-105.0" stroke="TRANSPARENT" strokeType="INSIDE" width="600.0">
+                     <fill>
+                        <LinearGradient endX="1.0" endY="1.0" startX="1.0">
+                           <stops>
+                              <Stop>
+                                 <color>
+                                    <Color />
+                                 </color>
+                              </Stop>
+                              <Stop offset="1.0">
+                                 <color>
+                                    <Color red="1.0" green="1.0" blue="1.0" opacity="0.0" />
+                                 </color>
+                              </Stop>
+                           </stops>
+                        </LinearGradient>
+                     </fill></Rectangle>
+                  <ImageView fx:id="image" fitHeight="63.0" fitWidth="95.0" layoutX="332.0" layoutY="-78.0" pickOnBounds="true" preserveRatio="true" />
+                  <Button layoutX="41.0" layoutY="239.0" mnemonicParsing="false" onAction="#rent" prefHeight="36.0" prefWidth="116.0" text="Rent" textFill="WHITE">
+                     <font>
+                        <Font name="Droid Sans Bold" size="19.0" />
+                     </font>
+                     <style>
+                        -fx-background-color: black;
+                     </style>
+                  </Button>
+                  <Button layoutX="221.0" layoutY="239.0" mnemonicParsing="false" onAction="#returned" prefHeight="36.0" prefWidth="116.0" text="Return" textFill="WHITE">
+                     <font>
+                        <Font name="Droid Sans Bold" size="19.0" />
+                     </font>
+                     <style>
+                        -fx-background-color: black;
+                     </style>
+                  </Button>
+                  <TextField fx:id="itemIDField" layoutX="39.0" layoutY="194.0" prefHeight="25.0" prefWidth="238.0" text="Enter the item you want to rent or return" />
+                  <TextField fx:id="customerIDField" layoutX="41.0" layoutY="137.0" text="Enter your customer ID" />
+                  <Text layoutX="39.0" layoutY="124.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Customer">
+                     <font>
+                        <Font name="System Bold" size="15.0" />
+                     </font>
+                  </Text>
+                  <Text layoutX="41.0" layoutY="182.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Item">
+                     <font>
+                        <Font name="System Bold" size="15.0" />
+                     </font>
+                  </Text>
+                  <Text layoutX="175.0" layoutY="90.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Please place your order" textAlignment="CENTER" wrappingWidth="203.2890625">
+                     <font>
+                        <Font name="Droid Sans Bold" size="17.0" />
+                     </font>
+                  </Text>
+               </children>
+               <effect>
+                  <DropShadow />
+               </effect>
+            </AnchorPane>
+            <Text fill="WHITE" layoutX="118.0" layoutY="39.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Welcome to Genie's Video Store " wrappingWidth="203.2890625">
+               <font>
+                  <Font name="Droid Sans" size="18.0" />
+               </font>
+            </Text>
+         </children></Pane>
+   </children>
+</AnchorPane>

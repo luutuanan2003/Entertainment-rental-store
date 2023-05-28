@@ -1,0 +1,8 @@
+I001-2001,bewwwwww,Game,1-week,0,3.99
+I002-1988,White Castle,Record,1-week,0,0.99,Comedy
+I003-1992,Alpha Dog,Record,1-week,0,1.99,Action
+I005-2015,Halo,Game,2-day,0,4.99
+I006-2013,Halloween,DVD,2-day,8,0.99,Horror
+I001-2023,medallll,Game,1-week,2,4.99
+I001-2025,dad,Game,2-day,1000,1.99
+
