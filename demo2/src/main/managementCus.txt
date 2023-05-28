@@ -1,6 +1,0 @@
-C001,Minh Dinh,VIP,2,15,70,0
-C002,Hong Wang,Guest,1,0,0,0
-C003,Linh Nguyen,Guest,2,1,0,0
-C004,Antony Zinc,Guest,1,0,0,0
-C005,Dang,Regular,4,1,0,0
-C006,Luan,VIP,2,9,0,0
